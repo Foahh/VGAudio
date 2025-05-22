@@ -1,1 +1,0 @@
-powershell -ExecutionPolicy Bypass -NoProfile -File .\build.ps1 -Clean -Build -Test -NetCore -NetFramework -Uwp
