@@ -155,7 +155,7 @@ namespace VGAudio.Utilities
 
                 for (int o = 0; o < outputCount; o++)
                 {
-                    input.Read(outputs[o], interleaveSize * b, bytesToCopy);
+                    input.ReadExactly(outputs[o], interleaveSize * b, bytesToCopy);
                     if (bytesToCopy < currentInputInterleaveSize)
                     {
                         input.Position += currentInputInterleaveSize - bytesToCopy;

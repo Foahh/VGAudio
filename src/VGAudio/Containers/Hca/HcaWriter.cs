@@ -73,7 +73,7 @@ namespace VGAudio.Containers.Hca
 
             writer.BaseStream.Position = 0;
             var header = new byte[HeaderSize - 2];
-            writer.BaseStream.Read(header, 0, header.Length);
+            writer.BaseStream.ReadExactly(header, 0, header.Length);
             ushort crc16 = Crc.Compute(header, header.Length);
             writer.Write(crc16);
         }

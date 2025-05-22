@@ -24,7 +24,7 @@ namespace VGAudio.Utilities
 
         public override float ReadSingle()
         {
-            BaseStream.Read(_bufferIn, 0, 4);
+            BaseStream.ReadExactly(_bufferIn, 0, 4);
 
             _bufferOut[0] = _bufferIn[3];
             _bufferOut[1] = _bufferIn[2];

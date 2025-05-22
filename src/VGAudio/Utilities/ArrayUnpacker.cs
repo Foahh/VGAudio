@@ -143,7 +143,7 @@ namespace VGAudio.Utilities
                 stream.Position = startIndex;
                 using (var deflate = new DeflateStream(stream, CompressionMode.Decompress))
                 {
-                    deflate.Read(inflatedBytes, 0, length);
+                    deflate.ReadExactly(inflatedBytes, 0, length);
                 }
             }
 
