@@ -1,16 +1,18 @@
 ﻿using System.IO;
 
-namespace VGAudio.Utilities.Riff
+namespace VGAudio.Utilities.Riff;
+
+public class WaveFactChunk : RiffSubChunk
 {
-    public class WaveFactChunk : RiffSubChunk
+    protected WaveFactChunk(BinaryReader reader) : base(reader)
     {
-        public int SampleCount { get; set; }
+        SampleCount = reader.ReadInt32();
+    }
 
-        protected WaveFactChunk(BinaryReader reader) : base(reader)
-        {
-            SampleCount = reader.ReadInt32();
-        }
+    public int SampleCount { get; set; }
 
-        public static WaveFactChunk Parse(RiffParser parser, BinaryReader reader) => new WaveFactChunk(reader);
+    public static WaveFactChunk Parse(RiffParser parser, BinaryReader reader)
+    {
+        return new WaveFactChunk(reader);
     }
 }

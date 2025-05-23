@@ -1,8 +1,7 @@
-namespace VGAudio.Utilities
+namespace VGAudio.Utilities;
+
+public enum Endianness
 {
-    public enum Endianness
-    {
-        BigEndian,
-        LittleEndian
-    }
+    BigEndian,
+    LittleEndian
 }

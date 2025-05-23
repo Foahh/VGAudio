@@ -1,12 +1,11 @@
-﻿namespace VGAudio.Codecs.CriHca
+﻿namespace VGAudio.Codecs.CriHca;
+
+public enum CriHcaQuality
 {
-    public enum CriHcaQuality
-    {
-        NotSet = 0,
-        Highest,
-        High,
-        Middle,
-        Low,
-        Lowest
-    }
+    NotSet = 0,
+    Highest,
+    High,
+    Middle,
+    Low,
+    Lowest
 }

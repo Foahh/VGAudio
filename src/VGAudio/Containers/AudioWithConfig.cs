@@ -1,17 +1,10 @@
 ﻿using VGAudio.Formats;
 
-namespace VGAudio.Containers
-{
-    public class AudioWithConfig
-    {
-        public AudioWithConfig(IAudioFormat audioFormat, Configuration configuration)
-        {
-            AudioFormat = audioFormat;
-            Configuration = configuration;
-        }
+namespace VGAudio.Containers;
 
-        public IAudioFormat AudioFormat { get; }
-        public AudioData Audio => new AudioData(AudioFormat);
-        public Configuration Configuration { get; }
-    }
+public class AudioWithConfig(IAudioFormat audioFormat, Configuration configuration)
+{
+    public IAudioFormat AudioFormat { get; } = audioFormat;
+    public AudioData Audio => new(AudioFormat);
+    public Configuration Configuration { get; } = configuration;
 }

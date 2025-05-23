@@ -2,38 +2,65 @@
 using System.IO;
 using System.Text;
 
-namespace VGAudio.Utilities
+namespace VGAudio.Utilities;
+
+public class BinaryReaderBe : BinaryReader
 {
-    public class BinaryReaderBE : BinaryReader
+    private readonly byte[] bufferIn = new byte[8];
+    private readonly byte[] bufferOut = new byte[8];
+
+    public BinaryReaderBe(Stream input) : base(input)
     {
-        public BinaryReaderBE(Stream input) : base(input) { }
+    }
 
-        public BinaryReaderBE(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen) { }
+    public BinaryReaderBe(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
+    {
+    }
 
-        private readonly byte[] _bufferIn = new byte[8];
-        private readonly byte[] _bufferOut = new byte[8];
+    public override short ReadInt16()
+    {
+        return Byte.ByteSwap(base.ReadInt16());
+    }
 
-        public override short ReadInt16() => Byte.ByteSwap(base.ReadInt16());
-        public override ushort ReadUInt16() => Byte.ByteSwap(base.ReadUInt16());
+    public override ushort ReadUInt16()
+    {
+        return Byte.ByteSwap(base.ReadUInt16());
+    }
 
-        public override int ReadInt32() => Byte.ByteSwap(base.ReadInt32());
-        public override uint ReadUInt32() => Byte.ByteSwap(base.ReadUInt32());
+    public override int ReadInt32()
+    {
+        return Byte.ByteSwap(base.ReadInt32());
+    }
 
-        public override long ReadInt64() => Byte.ByteSwap(base.ReadInt64());
-        public override ulong ReadUInt64() => Byte.ByteSwap(base.ReadUInt64());
+    public override uint ReadUInt32()
+    {
+        return Byte.ByteSwap(base.ReadUInt32());
+    }
 
-        public override float ReadSingle()
-        {
-            BaseStream.ReadExactly(_bufferIn, 0, 4);
+    public override long ReadInt64()
+    {
+        return Byte.ByteSwap(base.ReadInt64());
+    }
 
-            _bufferOut[0] = _bufferIn[3];
-            _bufferOut[1] = _bufferIn[2];
-            _bufferOut[2] = _bufferIn[1];
-            _bufferOut[3] = _bufferIn[0];
+    public override ulong ReadUInt64()
+    {
+        return Byte.ByteSwap(base.ReadUInt64());
+    }
 
-            return BitConverter.ToSingle(_bufferOut, 0);
-        }
+    public override float ReadSingle()
+    {
+        BaseStream.ReadExactly(bufferIn, 0, 4);
 
-        public override double ReadDouble() => BitConverter.Int64BitsToDouble(ReadInt64());
+        bufferOut[0] = bufferIn[3];
+        bufferOut[1] = bufferIn[2];
+        bufferOut[2] = bufferIn[1];
+        bufferOut[3] = bufferIn[0];
+
+        return BitConverter.ToSingle(bufferOut, 0);
+    }
+
+    public override double ReadDouble()
+    {
+        return BitConverter.Int64BitsToDouble(ReadInt64());
     }
 }

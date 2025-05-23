@@ -2,34 +2,36 @@
 using System.Linq;
 using VGAudio.Codecs;
 
-namespace VGAudio.Formats.Pcm8
+namespace VGAudio.Formats.Pcm8;
+
+public class Pcm8FormatBuilder : AudioFormatBaseBuilder<Pcm8Format, Pcm8FormatBuilder, CodecParameters>
 {
-    public class Pcm8FormatBuilder : AudioFormatBaseBuilder<Pcm8Format, Pcm8FormatBuilder, CodecParameters>
+    public Pcm8FormatBuilder(byte[][] channels, int sampleRate, bool signed = false)
     {
-        public byte[][] Channels { get; set; }
-        public bool Signed { get; set; }
-        public override int ChannelCount => Channels.Length;
+        if (channels == null || channels.Length < 1)
+            throw new InvalidDataException("Channels parameter cannot be empty or null");
 
-        public Pcm8FormatBuilder(byte[][] channels, int sampleRate, bool signed = false)
+        Channels = channels.ToArray();
+        SampleCount = Channels[0]?.Length ?? 0;
+        SampleRate = sampleRate;
+        Signed = signed;
+
+        foreach (var channel in Channels)
         {
-            if (channels == null || channels.Length < 1)
-                throw new InvalidDataException("Channels parameter cannot be empty or null");
+            if (channel == null)
+                throw new InvalidDataException("All provided channels must be non-null");
 
-            Channels = channels.ToArray();
-            SampleCount = Channels[0]?.Length ?? 0;
-            SampleRate = sampleRate;
-            Signed = signed;
-
-            foreach (byte[] channel in Channels)
-            {
-                if (channel == null)
-                    throw new InvalidDataException("All provided channels must be non-null");
-
-                if (channel.Length != SampleCount)
-                    throw new InvalidDataException("All channels must have the same sample count");
-            }
+            if (channel.Length != SampleCount)
+                throw new InvalidDataException("All channels must have the same sample count");
         }
+    }
 
-        public override Pcm8Format Build() => Signed ? new Pcm8SignedFormat(this) : new Pcm8Format(this);
+    public byte[][] Channels { get; set; }
+    public bool Signed { get; set; }
+    public override int ChannelCount => Channels.Length;
+
+    public override Pcm8Format Build()
+    {
+        return Signed ? new Pcm8SignedFormat(this) : new Pcm8Format(this);
     }
 }

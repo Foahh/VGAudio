@@ -5,71 +5,87 @@ using VGAudio.Codecs;
 using VGAudio.Codecs.Pcm8;
 using VGAudio.Formats.Pcm16;
 
-namespace VGAudio.Formats.Pcm8
+namespace VGAudio.Formats.Pcm8;
+
+public class Pcm8Format : AudioFormatBase<Pcm8Format, Pcm8FormatBuilder, CodecParameters>
 {
-    public class Pcm8Format : AudioFormatBase<Pcm8Format, Pcm8FormatBuilder, CodecParameters>
+    public Pcm8Format()
     {
-        public byte[][] Channels { get; }
-        public virtual bool Signed { get; } = false;
+        Channels = [];
+    }
 
-        public Pcm8Format() => Channels = new byte[0][];
-        public Pcm8Format(byte[][] channels, int sampleRate) : this(new Pcm8FormatBuilder(channels, sampleRate)) { }
-        internal Pcm8Format(Pcm8FormatBuilder b) : base(b) => Channels = b.Channels;
+    public Pcm8Format(byte[][] channels, int sampleRate) : this(new Pcm8FormatBuilder(channels, sampleRate))
+    {
+    }
 
-        public override Pcm16Format ToPcm16()
+    internal Pcm8Format(Pcm8FormatBuilder b) : base(b)
+    {
+        Channels = b.Channels;
+    }
+
+    public byte[][] Channels { get; }
+    public virtual bool Signed { get; } = false;
+
+    public override Pcm16Format ToPcm16()
+    {
+        var channels = new short[ChannelCount][];
+
+        for (var i = 0; i < ChannelCount; i++)
         {
-            var channels = new short[ChannelCount][];
-
-            for (int i = 0; i < ChannelCount; i++)
-            {
-                channels[i] = Signed ? Pcm8Codec.DecodeSigned(Channels[i]) : Pcm8Codec.Decode(Channels[i]);
-            }
-
-            return new Pcm16FormatBuilder(channels, SampleRate)
-                .WithLoop(Looping, LoopStart, LoopEnd)
-                .WithTracks(Tracks)
-                .Build();
+            channels[i] = Signed ? Pcm8Codec.DecodeSigned(Channels[i]) : Pcm8Codec.Decode(Channels[i]);
         }
 
-        public override Pcm8Format EncodeFromPcm16(Pcm16Format pcm16)
+        return new Pcm16FormatBuilder(channels, SampleRate)
+            .WithLoop(Looping, LoopStart, LoopEnd)
+            .WithTracks(Tracks)
+            .Build();
+    }
+
+    public override Pcm8Format EncodeFromPcm16(Pcm16Format pcm16)
+    {
+        var channels = new byte[pcm16.ChannelCount][];
+
+        for (var i = 0; i < pcm16.ChannelCount; i++)
         {
-            var channels = new byte[pcm16.ChannelCount][];
-
-            for (int i = 0; i < pcm16.ChannelCount; i++)
-            {
-                channels[i] = Signed ? Pcm8Codec.EncodeSigned(pcm16.Channels[i]) : Pcm8Codec.Encode(pcm16.Channels[i]);
-            }
-
-            return new Pcm8FormatBuilder(channels, pcm16.SampleRate, Signed)
-                .WithLoop(pcm16.Looping, pcm16.LoopStart, pcm16.LoopEnd)
-                .WithTracks(pcm16.Tracks)
-                .Build();
+            channels[i] = Signed ? Pcm8Codec.EncodeSigned(pcm16.Channels[i]) : Pcm8Codec.Encode(pcm16.Channels[i]);
         }
 
-        protected override Pcm8Format AddInternal(Pcm8Format pcm8)
+        return new Pcm8FormatBuilder(channels, pcm16.SampleRate, Signed)
+            .WithLoop(pcm16.Looping, pcm16.LoopStart, pcm16.LoopEnd)
+            .WithTracks(pcm16.Tracks)
+            .Build();
+    }
+
+    protected override Pcm8Format AddInternal(Pcm8Format pcm8)
+    {
+        var copy = GetCloneBuilder();
+        copy.Channels = Channels.Concat(pcm8.Channels).ToArray();
+        return copy.Build();
+    }
+
+    protected override Pcm8Format GetChannelsInternal(int[] channelRange)
+    {
+        var channels = new List<byte[]>();
+
+        foreach (var i in channelRange)
         {
-            Pcm8FormatBuilder copy = GetCloneBuilder();
-            copy.Channels = Channels.Concat(pcm8.Channels).ToArray();
-            return copy.Build();
+            if (i < 0 || i >= Channels.Length)
+                throw new ArgumentException($"Channel {i} does not exist.", nameof(channelRange));
+            channels.Add(Channels[i]);
         }
 
-        protected override Pcm8Format GetChannelsInternal(int[] channelRange)
-        {
-            var channels = new List<byte[]>();
+        var copy = GetCloneBuilder();
+        copy.Channels = channels.ToArray();
+        return copy.Build();
+    }
 
-            foreach (int i in channelRange)
-            {
-                if (i < 0 || i >= Channels.Length)
-                    throw new ArgumentException($"Channel {i} does not exist.", nameof(channelRange));
-                channels.Add(Channels[i]);
-            }
+    public static Pcm8FormatBuilder GetBuilder(byte[][] channels, int sampleRate)
+    {
+        return new Pcm8FormatBuilder(channels, sampleRate);
+    }
 
-            Pcm8FormatBuilder copy = GetCloneBuilder();
-            copy.Channels = channels.ToArray();
-            return copy.Build();
-        }
-
-        public static Pcm8FormatBuilder GetBuilder(byte[][] channels, int sampleRate) => new Pcm8FormatBuilder(channels, sampleRate);
-        public override Pcm8FormatBuilder GetCloneBuilder() => GetCloneBuilderBase(new Pcm8FormatBuilder(Channels, SampleRate));
+    public override Pcm8FormatBuilder GetCloneBuilder()
+    {
+        return GetCloneBuilderBase(new Pcm8FormatBuilder(Channels, SampleRate));
     }
 }
