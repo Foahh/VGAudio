@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
 
-    <AssemblyTitle>VGAudio</AssemblyTitle>
-    <Authors>Alex Barney</Authors>
-    <Copyright>Copyright © 2016 Alex Barney</Copyright>
-    <Description>A library for encoding, decoding, and manipulating audio files from video games.</Description>
-    <PackageTags>audio;dspadpcm;adpcm;brstm;Nintendo</PackageTags>
-    <PackageProjectUrl>https://github.com/Thealexbarney/VGAudio</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/Thealexbarney/VGAudio</RepositoryUrl>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <LangVersion>preview</LangVersion>
-  </PropertyGroup>
+        <AssemblyTitle>VGAudio</AssemblyTitle>
+        <Authors>Alex Barney</Authors>
+        <Copyright>Copyright © 2016 Alex Barney</Copyright>
+        <Description>A library for encoding, decoding, and manipulating audio files from video games.</Description>
+        <PackageTags>audio;dspadpcm;adpcm;brstm;Nintendo</PackageTags>
+        <PackageProjectUrl>https://github.com/Thealexbarney/VGAudio</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/Thealexbarney/VGAudio</RepositoryUrl>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
 
 </Project>
