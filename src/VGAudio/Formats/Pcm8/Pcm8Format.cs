@@ -59,7 +59,7 @@ public class Pcm8Format : AudioFormatBase<Pcm8Format, Pcm8FormatBuilder, CodecPa
     protected override Pcm8Format AddInternal(Pcm8Format pcm8)
     {
         var copy = GetCloneBuilder();
-        copy.Channels = Channels.Concat(pcm8.Channels).ToArray();
+        copy.Channels = [.. Channels, .. pcm8.Channels];
         return copy.Build();
     }
 
@@ -75,7 +75,7 @@ public class Pcm8Format : AudioFormatBase<Pcm8Format, Pcm8FormatBuilder, CodecPa
         }
 
         var copy = GetCloneBuilder();
-        copy.Channels = channels.ToArray();
+        copy.Channels = [.. channels];
         return copy.Build();
     }
 

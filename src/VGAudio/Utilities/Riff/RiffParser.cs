@@ -10,7 +10,7 @@ public class RiffParser
 {
     public RiffChunk RiffChunk { get; set; }
     public bool ReadDataChunk { get; set; } = true;
-    private Dictionary<string, RiffSubChunk> SubChunks { get; } = new();
+    private Dictionary<string, RiffSubChunk> SubChunks { get; } = [];
 
     private Dictionary<string, Func<RiffParser, BinaryReader, RiffSubChunk>> RegisteredSubChunks { get; } =
         new()
@@ -53,7 +53,7 @@ public class RiffParser
 
     public List<RiffSubChunk> GetAllSubChunks()
     {
-        return SubChunks.Values.ToList();
+        return [.. SubChunks.Values];
     }
 
     public T GetSubChunk<T>(string id) where T : RiffSubChunk

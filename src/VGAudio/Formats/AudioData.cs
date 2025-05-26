@@ -13,7 +13,7 @@ public class AudioData
         AddFormat(audioFormat);
     }
 
-    private Dictionary<Type, IAudioFormat> Formats { get; } = new();
+    private Dictionary<Type, IAudioFormat> Formats { get; } = [];
 
     private void AddFormat(IAudioFormat format)
     {

@@ -13,7 +13,7 @@ public class Pcm16Format : AudioFormatBase<Pcm16Format, Pcm16FormatBuilder, Code
 {
     public Pcm16Format()
     {
-        Channels = new short[0][];
+        Channels = [];
     }
 
     public Pcm16Format(short[][] channels, int sampleRate) : this(new Pcm16FormatBuilder(channels, sampleRate))
@@ -40,7 +40,7 @@ public class Pcm16Format : AudioFormatBase<Pcm16Format, Pcm16FormatBuilder, Code
     protected override Pcm16Format AddInternal(Pcm16Format pcm16)
     {
         var copy = GetCloneBuilder();
-        copy.Channels = Channels.Concat(pcm16.Channels).ToArray();
+        copy.Channels = [.. Channels, .. pcm16.Channels];
         return copy.Build();
     }
 
@@ -56,7 +56,7 @@ public class Pcm16Format : AudioFormatBase<Pcm16Format, Pcm16FormatBuilder, Code
         }
 
         var copy = GetCloneBuilder();
-        copy.Channels = channels.ToArray();
+        copy.Channels = [.. channels];
         return copy.Build();
     }
 

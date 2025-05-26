@@ -26,7 +26,7 @@ public abstract class AudioFormatBase<TFormat, TBuilder, TConfig> : IAudioFormat
         UnalignedLoopStart = builder.LoopStart;
         UnalignedLoopEnd = builder.LoopEnd;
         tracks = builder.Tracks;
-        Tracks = tracks != null && tracks.Count > 0 ? tracks : AudioTrack.GetDefaultTrackList(ChannelCount).ToList();
+        Tracks = tracks != null && tracks.Count > 0 ? tracks : [.. AudioTrack.GetDefaultTrackList(ChannelCount)];
     }
 
     public int UnalignedSampleCount { get; }

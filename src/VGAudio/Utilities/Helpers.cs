@@ -168,7 +168,7 @@ public static class Helpers
             }
         }
 
-        return primes.ToArray();
+        return [.. primes];
     }
 
     /// <summary>

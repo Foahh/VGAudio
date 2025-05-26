@@ -40,7 +40,6 @@ public class HcaWriter : AudioWriter<HcaWriter, HcaConfiguration>
         if (Configuration.EncryptionKey != null)
         {
             CriHcaEncryption.Crypt(Hca, AudioData, Configuration.EncryptionKey, false);
-
             Hca.EncryptionType = Configuration.EncryptionKey.KeyType;
         }
     }
@@ -133,7 +132,6 @@ public class HcaWriter : AudioWriter<HcaWriter, HcaConfiguration>
     private void WriteRvaChunk(BinaryWriter writer)
     {
         var volume = Hca.Volume;
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
         if (volume != 1)
         {
             WriteChunkId(writer, "rva\0");

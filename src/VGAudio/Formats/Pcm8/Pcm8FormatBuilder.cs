@@ -11,7 +11,7 @@ public class Pcm8FormatBuilder : AudioFormatBaseBuilder<Pcm8Format, Pcm8FormatBu
         if (channels == null || channels.Length < 1)
             throw new InvalidDataException("Channels parameter cannot be empty or null");
 
-        Channels = channels.ToArray();
+        Channels = [.. channels];
         SampleCount = Channels[0]?.Length ?? 0;
         SampleRate = sampleRate;
         Signed = signed;

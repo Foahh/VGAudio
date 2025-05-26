@@ -11,7 +11,7 @@ public static partial class CriHcaEncryption
      * /docs/hca/encryption-keys.md file in this repository.
      */
     private static readonly ulong[] KeyCodes =
-    {
+    [
         1224,
         2424,
         8910,
@@ -52,7 +52,7 @@ public static partial class CriHcaEncryption
         15806334760965177344,
         18279639311550860193,
         18446744073709551615
-    };
+    ];
 
     /// <summary>
     ///     A list of known keys used for encrypting HCA files.
@@ -60,5 +60,5 @@ public static partial class CriHcaEncryption
     /// <remarks>
     ///     See the /docs/hca/encryption-keys.md file in this repository for a more detailed list.
     /// </remarks>
-    public static List<CriHcaKey> Keys { get; } = KeyCodes.Select(key => new CriHcaKey(key)).ToList();
+    public static List<CriHcaKey> Keys { get; } = [.. KeyCodes.Select(key => new CriHcaKey(key))];
 }

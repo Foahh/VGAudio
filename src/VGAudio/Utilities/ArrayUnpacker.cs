@@ -8,7 +8,7 @@ namespace VGAudio.Utilities;
 public static class ArrayUnpacker
 {
     private static readonly Type[] TypeLookup =
-    {
+    [
         typeof(byte),
         typeof(sbyte),
         typeof(char),
@@ -20,7 +20,7 @@ public static class ArrayUnpacker
         typeof(ulong),
         typeof(float),
         typeof(double)
-    };
+    ];
 
     public static Array[] UnpackArrays(byte[] packedArrays)
     {
