@@ -54,15 +54,16 @@ public class CriHcaFormat : AudioFormatBase<CriHcaFormat, CriHcaFormatBuilder, C
         var encoder = CriHcaEncoder.InitializeNew(config);
         var pcm = pcm16.Channels;
         var pcmBuffer = Helpers.CreateJaggedArray<short[][]>(pcm16.ChannelCount, SamplesPerFrame);
-
-        progress?.SetTotal(encoder.Hca.FrameCount);
-
         var audio = Helpers.CreateJaggedArray<byte[][]>(encoder.Hca.FrameCount, encoder.FrameSize);
 
+        var totalFrames = encoder.Hca.FrameCount;
         var frameNum = 0;
-        for (var i = 0; frameNum < encoder.Hca.FrameCount; i++)
+        var i = 0;
+
+        while (frameNum < totalFrames)
         {
             var samplesToCopy = Math.Min(pcm16.SampleCount - i * SamplesPerFrame, SamplesPerFrame);
+
             for (var c = 0; c < pcm.Length; c++)
             {
                 Array.Copy(pcm[c], SamplesPerFrame * i, pcmBuffer[c], 0, samplesToCopy);
@@ -71,23 +72,22 @@ public class CriHcaFormat : AudioFormatBase<CriHcaFormat, CriHcaFormatBuilder, C
             var framesWritten = encoder.Encode(pcmBuffer, audio[frameNum]);
             if (framesWritten == 0)
             {
-                throw new NotSupportedException("Encoder returned no audio. This should not happen.");
+                throw new NotSupportedException("Encoder returned no audio, which should not happen.");
             }
 
-            if (framesWritten > 0)
-            {
-                frameNum++;
-                framesWritten--;
-                progress?.ReportAdd(1);
-            }
+            frameNum++;
+            framesWritten--;
+            progress?.Report((double)frameNum / totalFrames);
 
             while (framesWritten > 0)
             {
                 audio[frameNum] = encoder.GetPendingFrame();
                 frameNum++;
                 framesWritten--;
-                progress?.ReportAdd(1);
+                progress?.Report((double)frameNum / totalFrames);
             }
+
+            i++;
         }
         var builder = new CriHcaFormatBuilder(audio, encoder.Hca);
         return builder.Build();

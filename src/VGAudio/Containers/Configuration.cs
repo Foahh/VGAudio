@@ -1,10 +1,11 @@
-﻿using VGAudio.Formats;
+﻿using System;
+using VGAudio.Formats;
 
 namespace VGAudio.Containers;
 
 public class Configuration
 {
-    public IProgressReport Progress { get; set; }
+    public IProgress<double> Progress { get; set; }
 
     /// <summary>
     ///     If <c>true</c>, trims the output file length to the set LoopEnd.

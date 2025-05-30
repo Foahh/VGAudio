@@ -10,7 +10,6 @@ public static class CriHcaDecoder
 {
     public static short[][] Decode(HcaInfo hca, byte[][] audio, CriHcaParameters config = null)
     {
-        config?.Progress?.SetTotal(hca.FrameCount);
         var pcmOut = Helpers.CreateJaggedArray<short[][]>(hca.ChannelCount, hca.SampleCount);
         var pcmBuffer = Helpers.CreateJaggedArray<short[][]>(hca.ChannelCount, SamplesPerFrame);
 
@@ -19,10 +18,8 @@ public static class CriHcaDecoder
         for (var i = 0; i < hca.FrameCount; i++)
         {
             DecodeFrame(audio[i], frame, pcmBuffer);
-
             CopyPcmToOutput(pcmBuffer, pcmOut, hca, i);
-            //CopyBuffer(pcmBuffer, pcmOut, hca.InsertedSamples, i);
-            config?.Progress?.ReportAdd(1);
+            config?.Progress?.Report((double)i / hca.FrameCount);
         }
 
         return pcmOut;
@@ -118,7 +115,7 @@ public static class CriHcaDecoder
         var hca = frame.Hca;
         if (hca.HfrGroupCount == 0) return;
 
-        // The last spectral coefficient should always be 0;
+        // The last spectral coefficient should always be 0
         var totalBandCount = Math.Min(hca.TotalBandCount, 127);
 
         var hfrStartBand = hca.BaseBandCount + hca.StereoBandCount;
@@ -128,7 +125,8 @@ public static class CriHcaDecoder
         {
             if (channel.Type == ChannelType.StereoSecondary) continue;
 
-            for (int group = 0, band = 0; group < hca.HfrGroupCount; group++)
+            var band = 0;
+            for (var group = 0; group < hca.HfrGroupCount; group++)
             {
                 for (var i = 0; i < hca.BandsPerHfrGroup && band < hfrBandCount; band++, i++)
                 {

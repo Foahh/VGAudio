@@ -1,4 +1,6 @@
-﻿namespace VGAudio.Codecs;
+﻿using System;
+
+namespace VGAudio.Codecs;
 
 public class CodecParameters
 {
@@ -13,6 +15,6 @@ public class CodecParameters
         SampleCount = source.SampleCount;
     }
 
-    public IProgressReport Progress { get; set; }
+    public IProgress<double> Progress { get; set; }
     public int SampleCount { get; set; } = -1;
 }
