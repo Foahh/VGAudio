@@ -71,8 +71,8 @@ public class HcaWriter : AudioWriter<HcaWriter, HcaConfiguration>
 
         writer.BaseStream.Position = 0;
         var header = new byte[HeaderSize - 2];
-        writer.BaseStream.ReadExactly(header, 0, header.Length);
-        var crc16 = Crc.Compute(header, header.Length);
+        writer.BaseStream.ReadExactly(header);
+        var crc16 = Crc.Compute(header);
         writer.Write(crc16);
     }
 

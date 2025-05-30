@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Text;
 
@@ -6,8 +7,6 @@ namespace VGAudio.Utilities;
 
 public class BinaryWriterBe : BinaryWriter
 {
-    private readonly byte[] buffer = new byte[8];
-
     public BinaryWriterBe(Stream input) : base(input)
     {
     }
@@ -48,14 +47,9 @@ public class BinaryWriterBe : BinaryWriter
 
     public override void Write(float value)
     {
-        var valueBytes = BitConverter.GetBytes(value);
-
-        buffer[0] = valueBytes[3];
-        buffer[1] = valueBytes[2];
-        buffer[2] = valueBytes[1];
-        buffer[3] = valueBytes[0];
-
-        OutStream.Write(buffer, 0, 4);
+        Span<byte> buffer = stackalloc byte[4];
+        BinaryPrimitives.WriteSingleBigEndian(buffer, value);
+        OutStream.Write(buffer);
     }
 
     public override void Write(double value)

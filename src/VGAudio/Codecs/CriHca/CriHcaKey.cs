@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using VGAudio.Utilities;
 
 namespace VGAudio.Codecs.CriHca;
@@ -47,7 +48,8 @@ public class CriHcaKey
 
     private static byte[] CreateDecryptionTable(ulong keyCode)
     {
-        var kc = BitConverter.GetBytes(keyCode - 1);
+        Span<byte> kc = stackalloc byte[8];
+        BinaryPrimitives.WriteUInt64LittleEndian(kc, keyCode - 1);
         var seed = new byte[16];
 
         seed[0] = kc[1];

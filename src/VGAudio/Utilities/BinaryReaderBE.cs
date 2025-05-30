@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Text;
 
@@ -6,9 +7,6 @@ namespace VGAudio.Utilities;
 
 public class BinaryReaderBe : BinaryReader
 {
-    private readonly byte[] bufferIn = new byte[8];
-    private readonly byte[] bufferOut = new byte[8];
-
     public BinaryReaderBe(Stream input) : base(input)
     {
     }
@@ -49,14 +47,9 @@ public class BinaryReaderBe : BinaryReader
 
     public override float ReadSingle()
     {
-        BaseStream.ReadExactly(bufferIn, 0, 4);
-
-        bufferOut[0] = bufferIn[3];
-        bufferOut[1] = bufferIn[2];
-        bufferOut[2] = bufferIn[1];
-        bufferOut[3] = bufferIn[0];
-
-        return BitConverter.ToSingle(bufferOut, 0);
+        Span<byte> buffer = stackalloc byte[4];
+        BaseStream.ReadExactly(buffer);
+        return BinaryPrimitives.ReadSingleBigEndian(buffer);
     }
 
     public override double ReadDouble()

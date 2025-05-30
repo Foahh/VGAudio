@@ -7,26 +7,24 @@ public static partial class CriHcaEncryption
 {
     private const int FRAMES_TO_TEST = 10;
 
-    private static Crc16 Crc { get; } = new(0x8005);
+    private static readonly Crc16 Crc = new(0x8005);
 
     public static void Crypt(HcaInfo hca, byte[][] audio, CriHcaKey key, bool doDecrypt)
     {
-        for (var frame = 0; frame < hca.FrameCount; frame++)
+        foreach (var frame in audio)
         {
-            CryptFrame(hca, audio[frame], key, doDecrypt);
+            CryptFrame(hca, frame, key, doDecrypt);
         }
     }
 
-    public static void CryptFrame(HcaInfo hca, byte[] audio, CriHcaKey key, bool doDecrypt)
+    public static void CryptFrame(HcaInfo hca, Span<byte> audio, CriHcaKey key, bool doDecrypt)
     {
         var substitutionTable = doDecrypt ? key.DecryptionTable : key.EncryptionTable;
 
-        for (var b = 0; b < hca.FrameSize - 2; b++)
-        {
-            audio[b] = substitutionTable[audio[b]];
-        }
+        var data = audio[..(hca.FrameSize - 2)];
+        for (var i = 0; i < data.Length; i++) data[i] = substitutionTable[data[i]];
+        var crc = Crc.Compute(data);
 
-        var crc = Crc.Compute(audio, hca.FrameSize - 2);
         audio[hca.FrameSize - 2] = (byte)(crc >> 8);
         audio[hca.FrameSize - 1] = (byte)crc;
     }
@@ -51,7 +49,7 @@ public static partial class CriHcaEncryption
         var endFrame = Math.Min(audio.Length, startFrame + FRAMES_TO_TEST);
         for (var i = startFrame; i < endFrame; i++)
         {
-            Array.Copy(audio[i], buffer, audio[i].Length);
+            audio[i].AsSpan().CopyTo(buffer);
             CryptFrame(frame.Hca, buffer, key, true);
             var reader = new BitReader(buffer);
             if (!CriHcaPacking.UnpackFrame(frame, reader))
@@ -66,22 +64,17 @@ public static partial class CriHcaEncryption
     {
         for (var i = 0; i < frames.Length; i++)
         {
-            if (!FrameEmpty(frames[i]))
-            {
-                return i;
-            }
+            if (!FrameEmpty(frames[i])) return i;
         }
         return 0;
     }
 
-    private static bool FrameEmpty(byte[] frame)
+    private static bool FrameEmpty(ReadOnlySpan<byte> frame)
     {
-        for (var i = 2; i < frame.Length - 2; i++)
+        var data = frame[2..^2];
+        foreach (var b in data)
         {
-            if (frame[i] != 0)
-            {
-                return false;
-            }
+            if (b != 0) return false;
         }
         return true;
     }

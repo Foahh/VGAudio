@@ -59,10 +59,7 @@ internal static class CriHcaPacking
 
     public static int CalculateResolution(int scaleFactor, int noiseLevel)
     {
-        if (scaleFactor == 0)
-        {
-            return 0;
-        }
+        if (scaleFactor == 0) return 0;
         var curvePosition = noiseLevel - 5 * scaleFactor / 2 + 2;
         curvePosition = Helpers.Clamp(curvePosition, 0, 58);
         return CriHcaTables.ScaleToResolutionCurve[curvePosition];
@@ -228,10 +225,10 @@ internal static class CriHcaPacking
         return true;
     }
 
-    private static void WriteChecksum(BitWriter writer, Crc16 crc, byte[] hcaBuffer)
+    private static void WriteChecksum(BitWriter writer, Crc16 crc, Span<byte> hcaBuffer)
     {
         writer.Position = writer.LengthBits - 16;
-        var crc16 = crc.Compute(hcaBuffer, hcaBuffer.Length - 2);
+        var crc16 = crc.Compute(hcaBuffer[..^2]);
         writer.Write(crc16, 16);
     }
 

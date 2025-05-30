@@ -25,7 +25,7 @@ public class BitWriter
 
     public void Write(int value, int bitCount)
     {
-        Debug.Assert(bitCount >= 0 && bitCount <= 32);
+        Debug.Assert(bitCount is >= 0 and <= 32);
 
         if (bitCount > Remaining)
         {

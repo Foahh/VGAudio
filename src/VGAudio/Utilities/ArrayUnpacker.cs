@@ -154,8 +154,7 @@ public static class ArrayUnpacker
         using var stream = new MemoryStream(compressed);
         stream.Position = startIndex;
         using var deflate = new DeflateStream(stream, CompressionMode.Decompress);
-        deflate.ReadExactly(inflatedBytes, 0, length);
-
+        deflate.ReadExactly(inflatedBytes);
         return inflatedBytes;
     }
 

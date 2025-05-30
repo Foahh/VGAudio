@@ -8,6 +8,12 @@ public abstract class AudioReader<TReader, TStructure, TConfig> : IAudioReader
     where TReader : AudioReader<TReader, TStructure, TConfig>
     where TConfig : Configuration, new()
 {
+    public IAudioFormat ReadFormat(string filePath)
+    {
+        using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        return ReadStream(stream).AudioFormat;
+    }
+    
     public IAudioFormat ReadFormat(Stream stream)
     {
         return ReadStream(stream).AudioFormat;

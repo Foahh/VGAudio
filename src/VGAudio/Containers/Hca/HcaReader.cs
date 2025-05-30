@@ -125,11 +125,13 @@ public class HcaReader : AudioReader<HcaReader, HcaStructure, HcaConfiguration>
         for (var i = 0; i < structure.Hca.FrameCount; i++)
         {
             var data = reader.ReadBytes(structure.Hca.FrameSize);
-            int crc = Crc.Compute(data, data.Length - 2);
-            var expectedCrc = data[^2] << 8 | data[^1];
+            var span = data.AsSpan()[..^2];
+            int crc = Crc.Compute(span);
+
+            var expectedCrc = span[^2] << 8 | span[^1];
             if (crc != expectedCrc)
             {
-                // do nothing
+                Console.WriteLine($"HCA frame {i} CRC mismatch: expected {expectedCrc:X4}, got {crc:X4}");
             }
 
             structure.AudioData[i] = data;

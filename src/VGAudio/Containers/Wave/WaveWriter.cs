@@ -103,7 +103,7 @@ public class WaveWriter : AudioWriter<WaveWriter, WaveConfiguration>
         {
             case WaveCodec.Pcm16Bit:
                 var audioData = Pcm16.Channels.ShortToInterleavedByte();
-                writer.BaseStream.Write(audioData, 0, audioData.Length);
+                writer.BaseStream.Write(audioData);
                 break;
             case WaveCodec.Pcm8Bit:
                 Pcm8.Channels.Interleave(writer.BaseStream, BytesPerSample);
