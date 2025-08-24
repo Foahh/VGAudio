@@ -11,7 +11,7 @@ public abstract class AudioFormatBase<TFormat, TBuilder, TConfig> : IAudioFormat
     where TBuilder : AudioFormatBaseBuilder<TFormat, TBuilder, TConfig>
     where TConfig : CodecParameters, new()
 {
-    private readonly List<AudioTrack> tracks;
+    private readonly List<AudioTrack> _tracks;
 
     protected AudioFormatBase()
     {
@@ -25,8 +25,8 @@ public abstract class AudioFormatBase<TFormat, TBuilder, TConfig> : IAudioFormat
         Looping = builder.Looping;
         UnalignedLoopStart = builder.LoopStart;
         UnalignedLoopEnd = builder.LoopEnd;
-        tracks = builder.Tracks;
-        Tracks = tracks != null && tracks.Count > 0 ? tracks : [.. AudioTrack.GetDefaultTrackList(ChannelCount)];
+        _tracks = builder.Tracks;
+        Tracks = _tracks != null && _tracks.Count > 0 ? _tracks : [.. AudioTrack.GetDefaultTrackList(ChannelCount)];
     }
 
     public int UnalignedSampleCount { get; }
@@ -140,7 +140,7 @@ public abstract class AudioFormatBase<TFormat, TBuilder, TConfig> : IAudioFormat
         builder.Looping = Looping;
         builder.LoopStart = UnalignedLoopStart;
         builder.LoopEnd = UnalignedLoopEnd;
-        builder.Tracks = tracks;
+        builder.Tracks = _tracks;
         return builder;
     }
 

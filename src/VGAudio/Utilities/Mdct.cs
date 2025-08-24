@@ -16,13 +16,13 @@ public class Mdct
     private static readonly List<int[]> ShuffleTables =
     [
     ];
-    private readonly double[] imdctPrevious;
-    private readonly double[] imdctWindow;
+    private readonly double[] _imdctPrevious;
+    private readonly double[] _imdctWindow;
 
-    private readonly double[] mdctPrevious;
-    private readonly double[] scratchDct;
+    private readonly double[] _mdctPrevious;
+    private readonly double[] _scratchDct;
 
-    private readonly double[] scratchMdct;
+    private readonly double[] _scratchMdct;
 
     public Mdct(int mdctBits, double[] window, double scale = 1)
     {
@@ -37,11 +37,11 @@ public class Mdct
             throw new ArgumentException("Window must be as long as the MDCT size.", nameof(window));
         }
 
-        mdctPrevious = new double[MdctSize];
-        imdctPrevious = new double[MdctSize];
-        scratchMdct = new double[MdctSize];
-        scratchDct = new double[MdctSize];
-        imdctWindow = window;
+        _mdctPrevious = new double[MdctSize];
+        _imdctPrevious = new double[MdctSize];
+        _scratchMdct = new double[MdctSize];
+        _scratchDct = new double[MdctSize];
+        _imdctWindow = window;
     }
 
     public int MdctBits { get; }
@@ -80,21 +80,21 @@ public class Mdct
 
         var size = MdctSize;
         var half = size / 2;
-        var dctIn = scratchMdct;
+        var dctIn = _scratchMdct;
 
         for (var i = 0; i < half; i++)
         {
-            var a = imdctWindow[half - i - 1] * -input[half + i];
-            var b = imdctWindow[half + i] * input[half - i - 1];
-            var c = imdctWindow[i] * mdctPrevious[i];
-            var d = imdctWindow[size - i - 1] * mdctPrevious[size - i - 1];
+            var a = _imdctWindow[half - i - 1] * -input[half + i];
+            var b = _imdctWindow[half + i] * input[half - i - 1];
+            var c = _imdctWindow[i] * _mdctPrevious[i];
+            var d = _imdctWindow[size - i - 1] * _mdctPrevious[size - i - 1];
 
             dctIn[i] = a - b;
             dctIn[half + i] = c - d;
         }
 
         Dct4(dctIn, output);
-        Array.Copy(input, mdctPrevious, input.Length);
+        Array.Copy(input, _mdctPrevious, input.Length);
     }
 
     public void RunImdct(double[] input, double[] output)
@@ -111,16 +111,16 @@ public class Mdct
 
         var size = MdctSize;
         var half = size / 2;
-        var dctOut = scratchMdct;
+        var dctOut = _scratchMdct;
 
         Dct4(input, dctOut);
 
         for (var i = 0; i < half; i++)
         {
-            output[i] = imdctWindow[i] * dctOut[i + half] + imdctPrevious[i];
-            output[i + half] = imdctWindow[i + half] * -dctOut[size - 1 - i] - imdctPrevious[i + half];
-            imdctPrevious[i] = imdctWindow[size - 1 - i] * -dctOut[half - i - 1];
-            imdctPrevious[i + half] = imdctWindow[half - i - 1] * dctOut[i];
+            output[i] = _imdctWindow[i] * dctOut[i + half] + _imdctPrevious[i];
+            output[i + half] = _imdctWindow[i + half] * -dctOut[size - 1 - i] - _imdctPrevious[i + half];
+            _imdctPrevious[i] = _imdctWindow[size - 1 - i] * -dctOut[half - i - 1];
+            _imdctPrevious[i + half] = _imdctWindow[half - i - 1] * dctOut[i];
         }
     }
 
@@ -134,7 +134,7 @@ public class Mdct
         var shuffleTable = ShuffleTables[MdctBits];
         var sinTable = SinTables[MdctBits];
         var cosTable = CosTables[MdctBits];
-        var dctTemp = scratchDct;
+        var dctTemp = _scratchDct;
 
         var size = MdctSize;
         var lastIndex = size - 1;

@@ -4,12 +4,12 @@ namespace VGAudio.Utilities;
 
 public class Crc16(ushort polynomial)
 {
-    private readonly ushort[] table = GenerateTable(polynomial);
+    private readonly ushort[] _table = GenerateTable(polynomial);
 
     public ushort Compute(ReadOnlySpan<byte> data)
     {
         ushort crc = 0;
-        foreach (var b in data) crc = (ushort)(crc << 8 ^ table[crc >> 8 ^ b]);
+        foreach (var b in data) crc = (ushort)(crc << 8 ^ _table[crc >> 8 ^ b]);
         return crc;
     }
 

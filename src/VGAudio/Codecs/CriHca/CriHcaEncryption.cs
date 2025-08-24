@@ -5,7 +5,7 @@ namespace VGAudio.Codecs.CriHca;
 
 public static partial class CriHcaEncryption
 {
-    private const int FRAMES_TO_TEST = 10;
+    private const int FramesToTest = 10;
 
     private static readonly Crc16 Crc = new(0x8005);
 
@@ -46,7 +46,7 @@ public static partial class CriHcaEncryption
     private static bool TestKey(CriHcaFrame frame, byte[][] audio, CriHcaKey key, byte[] buffer)
     {
         var startFrame = FindFirstNonEmptyFrame(audio);
-        var endFrame = Math.Min(audio.Length, startFrame + FRAMES_TO_TEST);
+        var endFrame = Math.Min(audio.Length, startFrame + FramesToTest);
         for (var i = startFrame; i < endFrame; i++)
         {
             audio[i].AsSpan().CopyTo(buffer);
