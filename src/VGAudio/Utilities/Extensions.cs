@@ -79,56 +79,59 @@ public static class Extensions
         writer.WriteUtf8("\0");
     }
 
-    public static bool Eof(this BinaryReader reader)
+    extension(BinaryReader reader)
     {
-        return reader.BaseStream.Position >= reader.BaseStream.Length;
-    }
-
-    public static void Expect(this BinaryReader reader, params int[] expected)
-    {
-        var offset = reader.BaseStream.Position;
-        var actual = reader.ReadInt32();
-        if (!expected.Contains(actual))
+        public bool Eof()
         {
-            throw new InvalidDataException(
-                $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
-                $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            return reader.BaseStream.Position >= reader.BaseStream.Length;
         }
-    }
 
-    public static void Expect(this BinaryReader reader, params short[] expected)
-    {
-        var offset = reader.BaseStream.Position;
-        var actual = reader.ReadInt16();
-        if (!expected.Contains(actual))
+        public void Expect(params int[] expected)
         {
-            throw new InvalidDataException(
-                $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
-                $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            var offset = reader.BaseStream.Position;
+            var actual = reader.ReadInt32();
+            if (!expected.Contains(actual))
+            {
+                throw new InvalidDataException(
+                    $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
+                    $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            }
         }
-    }
 
-    public static void Expect(this BinaryReader reader, params ushort[] expected)
-    {
-        var offset = reader.BaseStream.Position;
-        var actual = reader.ReadUInt16();
-        if (!expected.Contains(actual))
+        public void Expect(params short[] expected)
         {
-            throw new InvalidDataException(
-                $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
-                $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            var offset = reader.BaseStream.Position;
+            var actual = reader.ReadInt16();
+            if (!expected.Contains(actual))
+            {
+                throw new InvalidDataException(
+                    $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
+                    $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            }
         }
-    }
 
-    public static void Expect(this BinaryReader reader, params byte[] expected)
-    {
-        var offset = reader.BaseStream.Position;
-        var actual = reader.ReadByte();
-        if (!expected.Contains(actual))
+        public void Expect(params ushort[] expected)
         {
-            throw new InvalidDataException(
-                $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
-                $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            var offset = reader.BaseStream.Position;
+            var actual = reader.ReadUInt16();
+            if (!expected.Contains(actual))
+            {
+                throw new InvalidDataException(
+                    $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
+                    $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            }
+        }
+
+        public void Expect(params byte[] expected)
+        {
+            var offset = reader.BaseStream.Position;
+            var actual = reader.ReadByte();
+            if (!expected.Contains(actual))
+            {
+                throw new InvalidDataException(
+                    $"Expected {(expected.Length > 1 ? "one of: " : "")}" +
+                    $"{expected.ToDelimitedString()}, but got {actual} at offset 0x{offset:X}");
+            }
         }
     }
 
@@ -146,13 +149,16 @@ public static class Extensions
         return sb.ToString();
     }
 
-    public static int DivideByRoundUp(this int value, int divisor)
+    extension(int value)
     {
-        return (int)Math.Ceiling((double)value / divisor);
-    }
+        public int DivideByRoundUp(int divisor)
+        {
+            return (int)Math.Ceiling((double)value / divisor);
+        }
 
-    public static int DivideBy2RoundUp(this int value)
-    {
-        return value / 2 + (value & 1);
+        public int DivideBy2RoundUp()
+        {
+            return value / 2 + (value & 1);
+        }
     }
 }

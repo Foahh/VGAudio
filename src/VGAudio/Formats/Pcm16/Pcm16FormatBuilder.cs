@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using VGAudio.Codecs;
 
 namespace VGAudio.Formats.Pcm16;

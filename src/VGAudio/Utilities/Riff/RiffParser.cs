@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static VGAudio.Utilities.Helpers;
 
 namespace VGAudio.Utilities.Riff;

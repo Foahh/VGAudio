@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using VGAudio.Codecs;
 using VGAudio.Codecs.Pcm8;
 using VGAudio.Formats.Pcm16;

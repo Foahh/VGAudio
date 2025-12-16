@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using VGAudio.Codecs.CriHca;
 using VGAudio.Formats;
@@ -132,7 +133,7 @@ public class HcaWriter : AudioWriter<HcaWriter, HcaConfiguration>
     private void WriteRvaChunk(BinaryWriter writer)
     {
         var volume = Hca.Volume;
-        if (volume != 1)
+        if (Math.Abs(volume - 1) > 0.001)
         {
             WriteChunkId(writer, "rva\0");
             writer.Write(volume);
